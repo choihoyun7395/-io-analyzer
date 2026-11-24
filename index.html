@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IO Analyzer | 산업연관분석</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">IO</div><div><strong>IO Analyzer</strong><small>산업연관분석 플랫폼</small></div></div>
+      <div class="nav-label">WORKSPACE</div>
+      <button class="nav-item active" data-page="dashboard"><span>▦</span> 대시보드</button>
+      <button class="nav-item" data-page="data"><span>▤</span> 데이터 탐색</button>
+      <button class="nav-item" data-page="analysis"><span>∑</span> 산업연관분석</button>
+      <button class="nav-item" data-page="simulation"><span>⌁</span> 시뮬레이션</button>
+      <button class="nav-item" data-page="report"><span>▥</span> 결과 보고서</button>
+      <div class="sidebar-bottom"><div class="status-dot"></div><span>브라우저 내 로컬 분석</span></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div><div class="eyebrow">INDUSTRIAL INPUT-OUTPUT ANALYSIS</div><h1 id="page-title">대시보드</h1></div>
+        <div class="top-actions"><span class="privacy-pill">● 파일은 브라우저에서 처리됩니다</span></div>
+      </header>
+
+      <section class="page active" id="page-dashboard">
+        <div class="welcome">
+          <div><div class="eyebrow light">DATA-DRIVEN ECONOMIC ANALYSIS</div><h2>산업 간 연결을 읽고<br>경제적 파급효과를 분석하세요.</h2>
+          <p>산업연관표를 업로드하고 산업 구조와 경제적 연관관계를 탐색할 수 있습니다.</p>
+          <button class="primary-btn" id="go-upload">산업연관표 업로드 <span>→</span></button></div>
+          <div class="welcome-art"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="core">IO</div><i class="node n1"></i><i class="node n2"></i><i class="node n3"></i><i class="node n4"></i></div>
+        </div>
+        <div class="section-heading"><div><h3>분석 환경</h3><p>현재 작업공간의 데이터 상태입니다.</p></div></div>
+        <div class="stat-grid">
+          <article class="stat-card"><span>업로드 파일</span><strong id="stat-file">없음</strong><small>현재 세션</small></article>
+          <article class="stat-card"><span>워크북 시트</span><strong id="stat-sheets">0</strong><small>인식된 시트 수</small></article>
+          <article class="stat-card"><span>산업분류 기준</span><strong id="stat-class">미선택</strong><small>사용자 설정</small></article>
+          <article class="stat-card"><span>데이터 상태</span><strong class="state-text" id="stat-state">대기</strong><small>파일 업로드 필요</small></article>
+        </div>
+        <div class="lower-grid">
+          <article class="panel"><div class="panel-head"><div><h3>시작하기</h3><p>처음 사용하는 경우 아래 순서로 진행하세요.</p></div></div>
+            <div class="step-list"><div><b>01</b><span><strong>자료 업로드</strong><small>Excel 산업연관표 파일을 선택합니다.</small></span></div><div><b>02</b><span><strong>시트와 분류 확인</strong><small>워크북의 시트 목록과 산업분류를 확인합니다.</small></span></div><div><b>03</b><span><strong>분석 기능 이용</strong><small>데이터 구조 확인 후 분석 기능을 진행합니다.</small></span></div></div>
+          </article>
+          <article class="panel notice"><div class="notice-icon">i</div><h3>분석 전 확인사항</h3><p>산업연관표는 작성 연도, 가격평가 기준, 산업분류 및 엑셀 구성에 따라 구조가 다를 수 있습니다. 업로드 후 자료의 단위와 시트 내용을 확인해야 합니다.</p></article>
+        </div>
+      </section>
+
+      <section class="page" id="page-data">
+        <div class="page-intro"><div><h2>데이터 탐색</h2><p>산업연관표 파일을 불러오고 워크북의 구조를 확인합니다.</p></div></div>
+        <div class="upload-panel" id="drop-zone">
+          <div class="upload-icon">↑</div><h3>산업연관표 Excel 파일 업로드</h3><p>파일을 이 영역에 끌어놓거나 아래 버튼으로 선택하세요.</p>
+          <label class="primary-btn file-button">파일 선택<input type="file" id="file-input" accept=".xlsx,.xls,.xlsm"></label>
+          <small>지원 형식: .xlsx, .xls, .xlsm · 파일은 서버로 전송되지 않습니다.</small>
+        </div>
+        <div id="workbook-area" class="hidden">
+          <div class="section-heading"><div><h3 id="workbook-name">업로드 자료</h3><p id="workbook-meta"></p></div><button class="outline-btn" id="clear-file">파일 해제</button></div>
+          <div class="explorer-grid">
+            <div class="panel sheet-panel"><div class="panel-head"><div><h3>시트 목록</h3><p>확인할 시트를 선택하세요.</p></div><span class="count-badge" id="sheet-count">0</span></div><div id="sheet-list" class="sheet-list"></div></div>
+            <div class="panel preview-panel"><div class="panel-head"><div><h3 id="preview-title">데이터 미리보기</h3><p id="preview-subtitle">시트를 선택하면 상위 행을 표시합니다.</p></div></div><div id="preview-wrap" class="table-wrap empty-preview">표시할 데이터가 없습니다.</div></div>
+          </div>
+          <div class="panel classification-panel"><div class="panel-head"><div><h3>산업분류 기준</h3><p>업로드한 자료에 포함된 분류를 선택하거나 직접 확인하세요.</p></div></div>
+            <div class="class-controls"><select id="classification"><option value="">분류 기준 선택</option><option>기본부문</option><option>통합 소분류</option><option>통합 중분류</option><option>통합 대분류</option><option>기타 / 직접 확인</option></select><span id="class-hint">자료 구조 확인 후 선택하세요.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-analysis">
+        <div class="page-intro"><div><h2>산업연관분석</h2><p>투입계수와 유발계수 등 산업연관분석 결과를 확인하는 공간입니다.</p></div></div>
+        <div class="empty-state"><div>∑</div><h3>분석할 데이터가 필요합니다</h3><p>먼저 산업연관표를 업로드하고 시트 구성을 확인해 주세요.<br>계산 기능은 데이터 검증 단계 이후 연결됩니다.</p><button class="outline-btn go-data">데이터 탐색으로 이동</button></div>
+      </section>
+      <section class="page" id="page-simulation">
+        <div class="page-intro"><div><h2>시뮬레이션</h2><p>최종수요 변화에 따른 산업별 파급효과를 계산합니다.</p></div></div>
+        <div class="empty-state"><div>⌁</div><h3>시뮬레이션 준비 중</h3><p>데이터 형식과 분석 모형을 확인한 뒤 기능을 연결할 예정입니다.</p><button class="outline-btn go-data">데이터 탐색으로 이동</button></div>
+      </section>
+      <section class="page" id="page-report">
+        <div class="page-intro"><div><h2>결과 보고서</h2><p>분석 결과를 표와 그래프로 확인하고 파일로 내보냅니다.</p></div></div>
+        <div class="empty-state"><div>▥</div><h3>아직 분석 결과가 없습니다</h3><p>분석 기능 구현 후 결과 요약과 다운로드 기능을 제공합니다.</p></div>
+      </section>
+      <footer>IO Analyzer <span>범용 산업연관분석 웹 애플리케이션 · 초기 개발 버전</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>
